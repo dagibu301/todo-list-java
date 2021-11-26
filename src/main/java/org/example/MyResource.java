@@ -22,10 +22,13 @@ public class MyResource {
         return "Hi there!";
     }
 
+
     @Path("/html")
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String sayHTMLHello() {
+        ConnectionDB connection = new ConnectionDB();
+        connection.get_connection();
         //
         return "<html><title>Hello World!</title><body>"
                 + "<h1>Hello world! </h1></body></html>";
