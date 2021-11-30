@@ -93,5 +93,27 @@ public class TodoDAO {
 
     public static void updateTaskDB(Task task){
 
+        ConnectionDB connectionDB = new ConnectionDB();
+        PreparedStatement ps = null;
+
+        try {
+            Connection cnx = connectionDB.getConnection();
+
+            try {
+                String query = "UPDATE tasks SET title = ?, description = ? WHERE id = ?";
+                ps = cnx.prepareStatement(query);
+                ps.setString(1,  task.getTitle());
+                ps.setString(2,  task.getDescription());
+                ps.setInt(3,  task.getId());
+                ps.executeUpdate();
+                System.out.println("Task updated");
+
+            } catch (SQLException ex) {
+                System.out.println(ex);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
 }

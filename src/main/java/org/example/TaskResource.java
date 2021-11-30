@@ -8,7 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/** Example resource class hosted at the URI path "/myresource"
+/** Example resource class hosted at the URI path "/tasks"
  */
 @Path("/tasks")
 public class TaskResource {
@@ -18,18 +18,7 @@ public class TaskResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Task createNewTask(Task newTask) {
-        //we can make use of UserProfile now
-        String title = newTask.getTitle();
-        String description = newTask.getDescription();
-        try {
-            TodoService.createTask(newTask);
-        } catch (Exception e) {
-            System.out.println("Not able to create record");
-        }
-
-        System.out.println("Title = " + title);
-        System.out.println("Description = " + description);
-        // And when we are done we can return user profile back
+        TodoService.createTask(newTask);
         return newTask;
     }
 
@@ -38,21 +27,20 @@ public class TaskResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void getAllTasks() {
         TodoService.getAllTasks();
-        /*Task[] currentTasks = TodoService.getAllTasks();*/
     }
 
-    @Path("/update/{id}")
+    @Path("/update")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") int id, Task task) {
-
-        return Response.noContent().build();
+    public Response update(Task task) {
+        TodoService.updateTask(task);
+        return Response.status(202).entity("Task updated successfully!").build();
     }
 
     @Path("/delete/{id}")
     @DELETE
     public Response deleteTask(@PathParam("id") int id) {
         TodoService.deleteTask(id);
-        return Response.status(202).entity("Task deleted successfully !!").build();
+        return Response.status(202).entity("Task deleted successfully!").build();
     }
 }

@@ -5,7 +5,6 @@ import org.example.model.Task;
 
 public class TodoService {
     public static void createTask(Task task) {
-
         TodoDAO.createTaskDB(task);
     }
 
@@ -18,6 +17,6 @@ public class TodoService {
     }
 
     public static void updateTask(Task task){
-
+        TodoDAO.updateTaskDB(task);
     }
 }
