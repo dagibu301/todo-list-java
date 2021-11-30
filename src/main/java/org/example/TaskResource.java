@@ -7,6 +7,7 @@ import org.example.service.TodoService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 
 /** Example resource class hosted at the URI path "/tasks"
  */
@@ -25,8 +26,8 @@ public class TaskResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public void getAllTasks() {
-        TodoService.getAllTasks();
+    public ArrayList<Task> getAllTasks() {
+        return TodoService.getAllTasks();
     }
 
     @Path("/update")

@@ -16,6 +16,13 @@ public class Task {
         this.isFinished = isFinished;
     }
 
+    public Task(int id, String title, String description, boolean isFinished) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.isFinished = isFinished;
+    }
+
     public int getId() {
         return id;
     }
