@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class TodoDAO {
     public static void createTaskDB(Task task) {
@@ -34,11 +35,12 @@ public class TodoDAO {
 
     }
 
-    public static void getAllTasksDB() {
+    public static ArrayList<Task> getAllTasksDB() {
 
         ConnectionDB connectionDB = new ConnectionDB();
         PreparedStatement ps = null;
         ResultSet rs = null;
+        ArrayList<Task> results = new ArrayList<Task>();
 
         try {
             Connection cnx = connectionDB.getConnection();
@@ -49,12 +51,14 @@ public class TodoDAO {
                 rs = ps.executeQuery();
 
                 while( rs.next()){
-                    System.out.println("---------------------------------");
-                    System.out.println("ID: " + rs.getInt("id"));
-                    System.out.println("Title: " + rs.getString("title"));
-                    System.out.println("Description: " + rs.getString("description"));
-                    System.out.println("Is Finished: " + rs.getBoolean("isfinished"));
-                    System.out.println("---------------------------------");
+                    Task newTask = new Task();
+
+                    results.add(new Task(
+                            rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getString("description"),
+                            rs.getBoolean("isfinished")
+                            ));
                 }
                 System.out.println("List Tasks");
 
@@ -64,6 +68,7 @@ public class TodoDAO {
         } catch (Exception e) {
             System.out.println(e);
         }
+        return results;
 
     }
 
