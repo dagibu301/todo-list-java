@@ -1,57 +1,15 @@
 package org.example.model;
 
-public class Task {
-    private int id;
-    private String title;
-    private String description;
-    private boolean isFinished;
+import org.immutables.gson.Gson;
+import org.immutables.value.Value;
 
-    public Task() {
+@Gson.TypeAdapters
+@Value.Immutable
+public abstract class Task {
 
-    }
+    public abstract int id();
+    public abstract String title();
+    public abstract String description();
+    public abstract boolean isFinished();
 
-    public Task(String title, String description, boolean isFinished) {
-        this.title = title;
-        this.description = description;
-        this.isFinished = isFinished;
-    }
-
-    public Task(int id, String title, String description, boolean isFinished) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.isFinished = isFinished;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    public void setFinished(boolean finished) {
-        isFinished = finished;
-    }
 }

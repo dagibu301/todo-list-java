@@ -1,6 +1,7 @@
 
 package org.example;
 
+import org.example.model.ImmutableTask;
 import org.example.model.Task;
 import org.example.service.TodoService;
 
@@ -18,7 +19,7 @@ public class TaskResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Task createNewTask(Task newTask) {
+    public ImmutableTask createNewTask(ImmutableTask newTask) {
         TodoService.createTask(newTask);
         return newTask;
     }
@@ -26,14 +27,14 @@ public class TaskResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ArrayList<Task> getAllTasks() {
+    public ArrayList<ImmutableTask> getAllTasks() {
         return TodoService.getAllTasks();
     }
 
     @Path("/update")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(Task task) {
+    public Response update(ImmutableTask task) {
         TodoService.updateTask(task);
         return Response.status(202).entity("Task updated successfully!").build();
     }
