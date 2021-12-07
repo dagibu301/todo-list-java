@@ -2,7 +2,6 @@
 package org.example;
 
 import org.example.model.ImmutableTask;
-import org.example.model.Task;
 import org.example.service.TodoService;
 
 import javax.ws.rs.*;
