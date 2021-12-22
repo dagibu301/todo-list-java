@@ -2,11 +2,17 @@ package org.example.dao;
 
 import org.example.ConnectionDB;
 import org.example.model.ImmutableTask;
-import org.example.model.Task;
+
+import org.jooq.DSLContext;
+import org.jooq.Result;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+import org.jooq.Record;
+import test.generated.tables.Tasks;
+import test.generated.tables.records.TasksRecord;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -17,19 +23,14 @@ public class TodoDAO {
 
         try{
             Connection cnx = connectionDB.getConnection();
-            PreparedStatement ps = null;
-            try {
-                String query = "INSERT INTO tasks (title, description, isfinished) VALUES (?,?,?)";
-                ps = cnx.prepareStatement(query);
-                ps.setString(1,  task.title());
-                ps.setString(2,  task.description());
-                ps.setBoolean(3,  task.isFinished());
-                ps.executeUpdate();
-                System.out.println("Task created");
 
-            } catch (SQLException ex) {
-                System.out.println(ex);
-            }
+            DSLContext context = DSL.using(cnx, SQLDialect.MYSQL);
+            TasksRecord newTask = context.newRecord(Tasks.TASKS);
+            newTask.setTitle(task.title());
+            newTask.setDescription(task.description());
+            newTask.setIsfinished((byte) (task.isFinished() ? 1 : 0 ));
+            newTask.store();
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -39,33 +40,28 @@ public class TodoDAO {
     public static ArrayList<ImmutableTask> getAllTasksDB() {
 
         ConnectionDB connectionDB = new ConnectionDB();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         ArrayList<ImmutableTask> results = new ArrayList<ImmutableTask>();
+        Byte zero = 0;
 
         try {
             Connection cnx = connectionDB.getConnection();
+            DSLContext context = DSL.using(cnx, SQLDialect.MYSQL);
+            /*Result<Record> records = context.select().from(Tasks.TASKS).fetch();*/
+            Result<Record> records = context.fetch("SELECT * FROM tasks");
 
-            try {
-                String query = "SELECT * FROM tasks";
-                ps = cnx.prepareStatement(query);
-                rs = ps.executeQuery();
+            // WIP: Cast Byte value isFinished to boolean coming from DB
+            for (Record record : records ) {
+                ImmutableTask newTask = ImmutableTask.builder()
+                        .id(record.get(Tasks.TASKS.ID))
+                        .title(record.get(Tasks.TASKS.TITLE))
+                        .description(record.get(Tasks.TASKS.DESCRIPTION))
+                        .isFinished(false)
+                        .build();
 
-                while( rs.next()){
-                    ImmutableTask newTask = ImmutableTask.builder()
-                            .id(rs.getInt("id"))
-                            .title(rs.getString("title"))
-                            .description(rs.getString("description"))
-                            .isFinished(rs.getBoolean("isfinished"))
-                            .build();
-
-                    results.add(newTask);
-                }
-                System.out.println("List Tasks");
-
-            } catch (SQLException ex) {
-                System.out.println(ex);
+                results.add(newTask);
             }
+            System.out.println("List Tasks");
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -74,13 +70,13 @@ public class TodoDAO {
     }
 
     public static void  deleteTaskDB(int id) {
-
         ConnectionDB connectionDB = new ConnectionDB();
-        PreparedStatement ps = null;
 
         try {
+
             Connection cnx = connectionDB.getConnection();
 
+            PreparedStatement ps = null;
             try {
                 String query = "DELETE FROM tasks WHERE id = ?";
                 ps = cnx.prepareStatement(query);
@@ -100,17 +96,26 @@ public class TodoDAO {
     public static void updateTaskDB(ImmutableTask task){
 
         ConnectionDB connectionDB = new ConnectionDB();
-        PreparedStatement ps = null;
+
 
         try {
             Connection cnx = connectionDB.getConnection();
+            /* JOOQ Implementation, WIP
+            DSLContext context = DSL.using(cnx, SQLDialect.MYSQL);
+            context.update(Tasks.TASKS)
+                    .set(Tasks.TASKS.TITLE, task.title())
+                    .set(Tasks.TASKS.DESCRIPTION, task.description())
+                    .set(Tasks.TASKS.ISFINISHED, (byte) 0)
+                    .where(Tasks.TASKS.ID.eq(task.id().orElse(0)))
+                    .execute();*/
 
+            PreparedStatement ps = null;
             try {
                 String query = "UPDATE tasks SET title = ?, description = ? WHERE id = ?";
                 ps = cnx.prepareStatement(query);
                 ps.setString(1,  task.title());
                 ps.setString(2,  task.description());
-                ps.setInt(3,  task.id());
+                ps.setInt(3,  task.id().orElse(0));
                 ps.executeUpdate();
                 System.out.println("Task updated");
 
