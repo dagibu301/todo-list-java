@@ -1,6 +1,6 @@
 package org.example.dao;
 
-import org.example.ConnectionDB;
+import org.example.IDBConnection;
 import org.example.model.ImmutableTask;
 
 import org.jooq.DSLContext;
@@ -16,13 +16,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class TodoDAO {
-    public static void createTaskDB(ImmutableTask task) {
+public interface ITodoDAO extends IDBConnection {
 
-        ConnectionDB connectionDB = new ConnectionDB();
-
+    default ImmutableTask createTaskDB(ImmutableTask task) {
         try{
-            Connection cnx = connectionDB.getConnection();
+            Connection cnx = getConnection();
 
             DSLContext context = DSL.using(cnx, SQLDialect.MYSQL);
             TasksRecord newTask = context.newRecord(Tasks.TASKS);
@@ -35,16 +33,16 @@ public class TodoDAO {
             System.out.println(e);
         }
 
+        return task;
     }
 
-    public static ArrayList<ImmutableTask> getAllTasksDB() {
+    default ArrayList<ImmutableTask> getAllTasksDB() {
 
-        ConnectionDB connectionDB = new ConnectionDB();
         ArrayList<ImmutableTask> results = new ArrayList<ImmutableTask>();
         Byte zero = 0;
 
         try {
-            Connection cnx = connectionDB.getConnection();
+            Connection cnx = getConnection();
             DSLContext context = DSL.using(cnx, SQLDialect.MYSQL);
             /*Result<Record> records = context.select().from(Tasks.TASKS).fetch();*/
             Result<Record> records = context.fetch("SELECT * FROM tasks");
@@ -69,12 +67,11 @@ public class TodoDAO {
 
     }
 
-    public static void  deleteTaskDB(int id) {
-        ConnectionDB connectionDB = new ConnectionDB();
+    default void  deleteTaskDB(int id) {
 
         try {
 
-            Connection cnx = connectionDB.getConnection();
+            Connection cnx = getConnection();
 
             PreparedStatement ps = null;
             try {
@@ -93,13 +90,10 @@ public class TodoDAO {
 
     }
 
-    public static void updateTaskDB(ImmutableTask task){
-
-        ConnectionDB connectionDB = new ConnectionDB();
-
+    default void updateTaskDB(ImmutableTask task){
 
         try {
-            Connection cnx = connectionDB.getConnection();
+            Connection cnx = getConnection();
             /* JOOQ Implementation, WIP
             DSLContext context = DSL.using(cnx, SQLDialect.MYSQL);
             context.update(Tasks.TASKS)
