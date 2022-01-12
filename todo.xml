@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.15.0.xsd">
+    <!-- Configure the database connection here -->
+    <jdbc>
+        <driver>com.mysql.cj.jdbc.Driver</driver>
+        <url>jdbc:mysql://localhost:3306/todolist</url>
+        <user>root</user>
+        <password></password>
+    </jdbc>
+
+    <generator>
+        <!-- The default code generator. You can override this one, to generate your own code style.
+             Supported generators:
+             - org.jooq.codegen.JavaGenerator
+             - org.jooq.codegen.KotlinGenerator
+             - org.jooq.codegen.ScalaGenerator
+             Defaults to org.jooq.codegen.JavaGenerator -->
+        <name>org.jooq.codegen.JavaGenerator</name>
+        <!--java -cp jooq-3.15.5.jar;jooq-meta-3.15.5.jar;jooq-codegen-3.15.5.jar;reactive-streams-1.0.3.jar;r2dbc-spi-0.9.0.M1.jar;mysql-connector-java-8.0.27.jar org.jooq.codegen.GenerationTool todo.xml-->
+
+        <database>
+            <!-- The database type. The format here is:
+                 org.jooq.meta.[database].[database]Database -->
+            <name>org.jooq.meta.mysql.MySQLDatabase</name>
+
+            <!-- The database schema (or in the absence of schema support, in your RDBMS this
+                 can be the owner, user, database name) to be generated -->
+            <inputSchema>todolist</inputSchema>
+
+            <!-- All elements that are generated from your schema
+                 (A Java regular expression. Use the pipe to separate several expressions)
+                 Watch out for case-sensitivity. Depending on your database, this might be important! -->
+            <includes>.*</includes>
+
+            <!-- All elements that are excluded from your schema
+                 (A Java regular expression. Use the pipe to separate several expressions).
+                 Excludes match before includes, i.e. excludes have a higher priority -->
+            <excludes></excludes>
+        </database>
+
+        <target>
+            <!-- The destination package of your generated classes (within the destination directory) -->
+            <packageName>test.generated</packageName>
+
+            <!-- The destination directory of your generated classes. Using Maven directory layout here -->
+            <directory>C:/Users/david/IdeaProjects/myapithatworks/src/main/java</directory>
+        </target>
+    </generator>
+</configuration>
